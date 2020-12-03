@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private UserService userService;
 
     @Autowired
     private DataSource dataSource;
@@ -49,22 +50,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         return authProvider;
     }
-
+/*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
-
+*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest()
+                .fullyAuthenticated()
+                .and().httpBasic()
                 .and()
-                .rememberMe().rememberMeParameter("remember-me").tokenRepository(tokenRepository())
-                .and()
-                .logout().permitAll();
+                .rememberMe().rememberMeParameter("remember-me").tokenRepository(tokenRepository());
         http.cors();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        auth.userDetailsService(userDetailsService());
     }
 
     @Bean
@@ -73,18 +79,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         jdbcTokenRepositoryImpl.setDataSource(dataSource);
         return jdbcTokenRepositoryImpl;
     }
-
-    public String setCookie(HttpServletResponse response) {
-
-        Cookie cookie = new Cookie("username", "cookiemonster");
-        cookie.setMaxAge(60);	//sets expiration after one minute
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/vault");
-
-        return cookie.toString();
-    }
-
 
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {

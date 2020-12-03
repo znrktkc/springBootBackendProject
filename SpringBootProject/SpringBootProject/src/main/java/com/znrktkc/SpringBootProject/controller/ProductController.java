@@ -18,8 +18,9 @@ public class ProductController {
     private final ProductRepository productRepository;
     private ProductServiceImpl productServiceImpl;
 
-    public ProductController(ProductRepository productRepository) {
+    public ProductController(ProductRepository productRepository, ProductServiceImpl productServiceImpl) {
         this.productRepository = productRepository;
+        this.productServiceImpl = productServiceImpl;
     }
 
 
@@ -36,6 +37,9 @@ public class ProductController {
                                                                 @RequestParam String detailDescription, @RequestParam int page,
                                                                 @RequestParam String sortField, @RequestParam String sortType) {
 
+        if(sortField == "") {
+            sortField = "name";
+        }
         Sort sort = Sort.by(sortField);
         if(sortType.charAt(0) == 'd') {
             sort = sort.descending();

@@ -3,7 +3,6 @@ package com.znrktkc.SpringBootProject.service.impl;
 import com.znrktkc.SpringBootProject.entity.Product;
 import com.znrktkc.SpringBootProject.repo.ProductRepository;
 import com.znrktkc.SpringBootProject.service.ProductService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +13,14 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
     @Override
     public List<Product> getProductsWithFilters(String name, String description, String detailDescription, int page,
                                                 String sortField, String sortType, Pageable pageAndSort) {
 
-        if(sortField == "") {
-            sortField = "name";
-        }
         List<Product> filteredProducts = null;
         if (name != "") {
             if(description != "" && detailDescription != "") {
