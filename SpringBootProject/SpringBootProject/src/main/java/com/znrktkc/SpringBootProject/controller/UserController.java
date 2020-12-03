@@ -36,7 +36,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser("znrktkc"));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value  = "/getUser")
+    @RequestMapping(method = RequestMethod.POST, value  = "/login")
     public ResponseEntity<User> login(@RequestBody User user) {
         System.out.println("get started with username: "+ user.getUsername());
         return ResponseEntity.ok(userService.getUser(user.getUsername()));

@@ -58,14 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().permitAll()
                 .and()
                 .rememberMe().rememberMeParameter("remember-me").tokenRepository(tokenRepository())
                 .and()
                 .logout().permitAll();
-
+        http.cors();
     }
 
     @Bean
