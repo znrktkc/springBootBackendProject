@@ -2,39 +2,32 @@ package com.znrktkc.SpringBootProject.service.impl;
 
 import com.znrktkc.SpringBootProject.entity.User;
 import com.znrktkc.SpringBootProject.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import com.znrktkc.SpringBootProject.service.UserService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
-public class UserServiceImpl extends SavedRequestAwareAuthenticationSuccessHandler implements UserDetailsService {
+@Component
+public class UserServiceImpl implements UserService {
 
-    public static void saveCookie(String cookieName, String value, HttpServletResponse response) {
-        Cookie cookie = new Cookie(cookieName, value);
-        //maxAge is one month: 30*24*60*60
-        cookie.setMaxAge(2592000);
-        cookie.setDomain("projectName");
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-
-    @Autowired
-    private UserRepository userRepository;
+    @Override
+    public User save(User user) {
+        User newUser = new User();
+        newUser.setUser(user);
+        return userRepository.save(newUser);
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public User getUser(String username)  throws UsernameNotFoundException {
+        Optional<User> byUsername = Optional.ofNullable(userRepository.findByUsername(username));
 
-        if (user == null) {
-            throw new UsernameNotFoundException("Could not find user");
-        }
-
-        return (UserDetails) new UsersDetails(user);
+        return byUsername.orElseThrow(() -> new UsernameNotFoundException("Kullanıcı Bulunamadı"));
     }
 }

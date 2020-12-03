@@ -1,6 +1,8 @@
 package com.znrktkc.SpringBootProject.security;
+import com.znrktkc.SpringBootProject.entity.User;
 import com.znrktkc.SpringBootProject.service.UserService;
 import com.znrktkc.SpringBootProject.service.impl.UserServiceImpl;
+import com.znrktkc.SpringBootProject.service.impl.UsersDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserServiceImpl();
+        return new UsersDetails(new User());
     }
 
     @Bean
