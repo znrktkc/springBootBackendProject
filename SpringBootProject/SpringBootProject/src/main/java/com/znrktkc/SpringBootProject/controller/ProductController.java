@@ -1,41 +1,43 @@
 package com.znrktkc.SpringBootProject.controller;
-
-import com.znrktkc.SpringBootProject.entity.Product;
-import com.znrktkc.SpringBootProject.repo.ProductRepository;
-import com.znrktkc.SpringBootProject.service.ProductService;
 import com.znrktkc.SpringBootProject.service.impl.ProductServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import java.util.HashMap;
 
+/**
+ * this class is an controller for product api
+ */
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
+    private static final Logger logger = LogManager.getLogger(ProductController.class);
 
-    private final ProductRepository productRepository;
     private ProductServiceImpl productServiceImpl;
 
-    public ProductController(ProductRepository productRepository, ProductServiceImpl productServiceImpl) {
-        this.productRepository = productRepository;
+    public ProductController(ProductServiceImpl productServiceImpl) {
         this.productServiceImpl = productServiceImpl;
     }
 
-
-    @GetMapping(value = "/getProducts")
-    @CrossOrigin
-    public ResponseEntity<List<Product>> getProducts() {
-        System.out.println("getProducts started.");
-        return ResponseEntity.ok(productRepository.findAll());
-    }
-
+    /**
+     * this path created to bring products suitable for the filter
+     * @param name
+     * @param description
+     * @param detailDescription
+     * @param page
+     * @param sortField
+     * @param sortType
+     * @return hashMap {data: Obj, totalElements: int, totalPages: int}
+     */
     @GetMapping(value = "/getProductsWithFilters")
     @CrossOrigin
-    public ResponseEntity<List<Product>> getProductsWithFilters(@RequestParam String name, @RequestParam String description,
-                                                                @RequestParam String detailDescription, @RequestParam int page,
-                                                                @RequestParam String sortField, @RequestParam String sortType) {
+    public HashMap<String, Object> getProductsWithFilters(@RequestParam String name, @RequestParam String description,
+                                                          @RequestParam String detailDescription, @RequestParam int page,
+                                                          @RequestParam String sortField, @RequestParam String sortType) {
+        logger.debug("getProductsWithFilter started.");
 
         if(sortField == "") {
             sortField = "name";
@@ -46,11 +48,11 @@ public class ProductController {
         } else {
             sort = sort.ascending();
         }
-        Pageable pageAndSort = PageRequest.of(page, 20, sort);
-        List<Product> filteredProducts = productServiceImpl.getProductsWithFilters(name, description, detailDescription, page, sortField, sortType, pageAndSort);
+        Pageable pageAndSort = PageRequest.of(page, 10, sort);
+        HashMap<String, Object> filteredProducts = productServiceImpl.getProductsWithFilters(name, description, detailDescription, page, sortField, sortType, pageAndSort);
 
-        System.out.println("getProductsWithFilters end.");
-        return ResponseEntity.ok(filteredProducts);
+        logger.debug("getProductsWithFilters end.");
+        return filteredProducts;
     }
 }
 

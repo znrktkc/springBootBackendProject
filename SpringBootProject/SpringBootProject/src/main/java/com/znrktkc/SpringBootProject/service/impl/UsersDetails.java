@@ -1,8 +1,6 @@
 package com.znrktkc.SpringBootProject.service.impl;
-
 import java.util.Arrays;
 import java.util.Collection;
-
 import com.znrktkc.SpringBootProject.entity.User;
 import com.znrktkc.SpringBootProject.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * this class created for spring security
+ */
 public class UsersDetails implements UserDetails, UserDetailsService {
     private User user;
 

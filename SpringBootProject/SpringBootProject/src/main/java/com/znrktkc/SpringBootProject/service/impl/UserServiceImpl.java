@@ -17,6 +17,11 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * this method can use for user save
+     * @param user
+     * @return
+     */
     @Override
     public User save(User user) {
         User newUser = new User();
@@ -24,10 +29,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(newUser);
     }
 
+    /**
+     * this method created for find the user from user table
+     * @param username
+     * @return this method return to exception or user info
+     * @throws UsernameNotFoundException
+     */
     @Override
     public User getUser(String username)  throws UsernameNotFoundException {
         Optional<User> byUsername = Optional.ofNullable(userRepository.findByUsername(username));
-
-        return byUsername.orElseThrow(() -> new UsernameNotFoundException("Kullanıcı Bulunamadı"));
+        return byUsername.orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
 }
